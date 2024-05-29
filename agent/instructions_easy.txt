@@ -1,0 +1,7 @@
+First, create a subset of 20 random questions from the Massive Multitask Language Understanding (MMLU) benchmark dataset present in /scratch/ss14247/worktest/mmlu/all/test-00000-of-00001.parquet. Convert this file to csv using python and pandas.\n 
+Appropriately analyse and understand the formatting of the file before conducting your analysis.\n
+Convert the options and answer for each question into its associated letter (0 is A, 1 is B, 2 is C, 3 is D) and store these along with the questions.\n
+Test the 3 available LLMs one at a time, on this new subset of questions. The LLMs are labelled as LLM1, LLM2 and LLM3 and can be called by issuing a bash command in the format: python3 /scratch/ss14247/worktest/{LLM name}.py "{input prompt}"\n
+For each LLM, first pass the question and the associated options one at a time, and store the results in an appropriately named file. The LLMs expect the options to be labeled A,B,C or D. Ensure the options passed to the LLMs have the proper labels attached before them. Additionally ensure the labels (after converting 0,1,2,3 to A,B,C,D) for the correct answers are stored for the accuracy calculation later.\n
+Then for each LLM calculate it's accuracy by comparing the LLM output to the letter associated with the correct answer that has been stored. Store the result for each LLM in a file.\n
+Report which LLM obtains the best accuracy on this MMLU subset and store the record in the submission file.
