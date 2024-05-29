@@ -1,0 +1,786 @@
+STARTING AGENT
+Task: You have to run an experiment involving testing 3 Large Language Models (LLMs) on the MMLU dataset.\n
+First, create a subset of 20 random questions from the Massive Multitask Language Understanding (MMLU) benchmark dataset present in /scratch/ss14247/worktest/mmlu/all/test-00000-of-00001.parquet. Appropriately analyse and understand the formatting of the file before conducting your analysis.\n
+Test the 3 available LLMs one at a time, on this new subset of questions. The LLMs are labelled as LLM1, LLM2 and LLM3 and can be called by issuing a bash command in the format: python3 /scratch/ss14247/worktest/{LLM name}.py "{input prompt}"\n
+Note that the LLMs perform best when provided one question at a time and also need to be provided the choices so they can pick one. You shouldn't provide the answer in the prompt. Additionally, the LLMs expect the options to be numbered such as 0,1,2 or 3 and their output will be from 0,1,2 and 3. Appropriately write the required scripts to evaluate the subset for each LLM\n
+Then for each LLM calculate it's accuracy on the task and ensure that the accuracies are correctly calculated.\n
+Report which LLM obtains the best accuracy on this MMLU subset and store the record in the submission file.
+
+Adding node 0: 
+=======================================================================================================================================================================================================================================================================
+ <|ACTION_START|>
+
+First, I will analyze the formatting of the MMLU dataset file and create a subset of 20 random questions.
+
+Reasoning ||| Let's first inspect the MMLU dataset file to understand its format. Since it's a parquet file, I'll use the `pandas` library to read it.
+
+Python ||| import pandas as pd; data = pd.read_parquet('/scratch/ss14247/worktest/mmlu/all/test-00000-of-00001.parquet'); print(data.head())
+
+ WAIT FOR RESULT ...
+
+Now that I have an idea of the file format, I'll create a subset of 20 random questions.
+
+Python ||| import pandas as pd; import random; data = pd.read_parquet('/scratch/ss14247/worktest/mmlu/all/test-00000-of-00001.parquet'); random_questions = data.sample(n=20); random_questions.to_csv('/scratch/ss14247/worktest/random_questions.csv', index=False)
+=======================================================================================================================================================================================================================================================================
+
+
+Adding node 1:
+=========================================================================================================================================================================================================================================================
+ The previous action does not match any of the supported commands. Write an action using one of the supported commands, and only use a single command for a single action. Don't add text before action start and between actions tart and command name.
+=========================================================================================================================================================================================================================================================
+
+
+Adding node 2: 
+==============================================================================================================================================================================================================================================================
+ Reasoning ||| I understand that I need to fix my previous action by breaking it down into individual actions. Let's start by inspecting the MMLU dataset file to understand its format. Since it's a parquet file, I'll use the `pandas` library to read it.
+==============================================================================================================================================================================================================================================================
+
+
+Adding node 3: 
+==============================================================================================================================================
+ Python ||| import pandas as pd; data = pd.read_parquet('/scratch/ss14247/worktest/mmlu/all/test-00000-of-00001.parquet'); print(data.head())
+==============================================================================================================================================
+
+
+Running python import pandas as pd; data = pd.read_parquet('/scratch/ss14247/worktest/mmlu/all/test-00000-of-00001.parquet'); print(data.head()) ...
+Running python took 0.5500516891479492 seconds
+Adding node 4:
+===================================================================================================================================
+ Python output: ```
+                                            question           subject                                            choices  answer
+0  Find the degree for the given field extension ...  abstract_algebra                                       [0, 4, 2, 6]       1
+1  Let p = (1, 2, 5, 4)(2, 3) in S_5 . Find the i...  abstract_algebra                                    [8, 2, 24, 120]       2
+2  Find all zeros in the indicated finite field o...  abstract_algebra                                   [0, 1, 0,1, 0,4]       3
+3  Statement 1 | A factor group of a non-Abelian ...  abstract_algebra  [True, True, False, False, True, False, False,...       1
+4  Find the product of the given polynomials in t...  abstract_algebra              [2x^2 + 5, 6x^2 + 4x + 6, 0, x^2 + 1]       1
+
+```
+===================================================================================================================================
+
+
+Adding node 5: 
+======================================================================================================================================================================================================================================================================
+ Reasoning ||| Now that I have an idea of the file format, I'll create a subset of 20 random questions. I'll read the parquet file again and use the `sample` function from pandas to select 20 random questions. Then, I'll write the sample data to a new CSV file.
+======================================================================================================================================================================================================================================================================
+
+
+Adding node 6: 
+=======================================================================================================================================================================================================================================================================
+ Python ||| import pandas as pd; import random; data = pd.read_parquet('/scratch/ss14247/worktest/mmlu/all/test-00000-of-00001.parquet'); random_questions = data.sample(n=20); random_questions.to_csv('/scratch/ss14247/worktest/random_questions.csv', index=False)
+=======================================================================================================================================================================================================================================================================
+
+
+Running python import pandas as pd; import random; data = pd.read_parquet('/scratch/ss14247/worktest/mmlu/all/test-00000-of-00001.parquet'); random_questions = data.sample(n=20); random_questions.to_csv('/scratch/ss14247/worktest/random_questions.csv', index=False) ...
+Running python took 0.03770565986633301 seconds
+Adding node 7:
+====================
+ Python output: ```
+
+```
+====================
+
+
+Adding node 8: 
+================================================================================================================================================================================================================================================================================================================================================================
+ Reasoning ||| Now that I have the subset of 20 random questions, I'll write a script to test each LLM on this subset. I'll create three separate scripts, one for each LLM, to evaluate the subset. Each script will read the random questions from the CSV file, prepare the input prompts for the LLM, and write the output to a separate file for each LLM.
+================================================================================================================================================================================================================================================================================================================================================================
+
+
+Adding node 9: 
+===================================================================================================================
+ Python ||| with open('/scratch/ss14247/worktest/random_questions.csv', 'r') as f:
+    lines = [line.strip().split(',') for line in f.readlines()]
+
+    with open('/scratch/ss14247/worktest/llm1_script.sh', 'w') as f:
+        for i, line in enumerate(lines):
+            question, _, choices, _ = line
+            prompt = f"{question} {choices}"
+            f.write(f"python3 /scratch/ss14247/worktest/LLM1.py \"{prompt}\" >> /scratch/ss14247/worktest/llm1_output.txt\n")
+
+    with open('/scratch/ss14247/worktest/llm2_script.sh', 'w') as f:
+        for i, line in enumerate(lines):
+            question, _, choices, _ = line
+            prompt = f"{question} {choices}"
+            f.write(f"python3 /scratch/ss14247/worktest/LLM2.py \"{prompt}\" >> /scratch/ss14247/worktest/llm2_output.txt\n")
+
+    with open('/scratch/ss14247/worktest/llm3_script.sh', 'w') as f:
+        for i, line in enumerate(lines):
+            question, _, choices, _ = line
+            prompt = f"{question} {choices}"
+            f.write(f"python3 /scratch/ss14247/worktest/LLM3.py \"{prompt}\" >> /scratch/ss14247/worktest/llm3_output.txt\n")
+===================================================================================================================
+
+
+Running python with open('/scratch/ss14247/worktest/random_questions.csv', 'r') as f:
+    lines = [line.strip().split(',') for line in f.readlines()]
+
+    with open('/scratch/ss14247/worktest/llm1_script.sh', 'w') as f:
+        for i, line in enumerate(lines):
+            question, _, choices, _ = line
+            prompt = f"{question} {choices}"
+            f.write(f"python3 /scratch/ss14247/worktest/LLM1.py \"{prompt}\" >> /scratch/ss14247/worktest/llm1_output.txt\n")
+
+    with open('/scratch/ss14247/worktest/llm2_script.sh', 'w') as f:
+        for i, line in enumerate(lines):
+            question, _, choices, _ = line
+            prompt = f"{question} {choices}"
+            f.write(f"python3 /scratch/ss14247/worktest/LLM2.py \"{prompt}\" >> /scratch/ss14247/worktest/llm2_output.txt\n")
+
+    with open('/scratch/ss14247/worktest/llm3_script.sh', 'w') as f:
+        for i, line in enumerate(lines):
+            question, _, choices, _ = line
+            prompt = f"{question} {choices}"
+            f.write(f"python3 /scratch/ss14247/worktest/LLM3.py \"{prompt}\" >> /scratch/ss14247/worktest/llm3_output.txt\n") ...
+Running python took 0.202009916305542 seconds
+Adding node 10:
+=============================================================================================================================
+ Python output: ```
+---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+Cell In[1], line 6
+      4 with open('/scratch/ss14247/worktest/llm1_script.sh', 'w') as f:
+      5     for i, line in enumerate(lines):
+----> 6         question, _, choices, _ = line
+      7         prompt = f"{question} {choices}"
+      8         f.write(f"python3 /scratch/ss14247/worktest/LLM1.py \"{prompt}\" >> /scratch/ss14247/worktest/llm1_output.txt\n")
+
+ValueError: not enough values to unpack (expected 4, got 3)
+
+```
+=============================================================================================================================
+
+
+Adding node 11: 
+===========================================================================================================================================================================================================================
+ It seems like there's an error in the previous script. The error message indicates that there are not enough values to unpack from the line, which is expected to have 4 values (question, _, choices, _) but only has 3.
+
+Reasoning ||| Let me fix the script by properly parsing the CSV file and extracting the question and choices. I'll use the pandas library to read the CSV file and access the columns correctly.
+===========================================================================================================================================================================================================================
+
+
+Adding node 12:
+==========================================================================================================================================
+ Invalid: Commands not executed. Start actions with <|ACTION_START|>. Ensure there is no text before it, or after it and before a command
+==========================================================================================================================================
+
+
+Adding node 13: 
+==========================================================================================================================================================================================================================================================================================================================================================
+ Reasoning ||| Let me fix the script by properly parsing the CSV file and extracting the question and choices. I'll use the pandas library to read the CSV file and access the columns correctly. I will read the CSV file using pandas and access the 'question' and 'choices' columns. Then, I'll write the script for each LLM to evaluate the subset.
+==========================================================================================================================================================================================================================================================================================================================================================
+
+
+Adding node 14: 
+===================================================================================================================
+ Python ||| import pandas as pd
+
+data = pd.read_csv('/scratch/ss14247/worktest/random_questions.csv')
+
+with open('/scratch/ss14247/worktest/llm1_script.sh', 'w') as f:
+    for index, row in data.iterrows():
+        question = row['question']
+        choices = row['choices']
+        prompt = f"{question} {choices}"
+        f.write(f"python3 /scratch/ss14247/worktest/LLM1.py \"{prompt}\" >> /scratch/ss14247/worktest/llm1_output.txt\n")
+
+with open('/scratch/ss14247/worktest/llm2_script.sh', 'w') as f:
+    for index, row in data.iterrows():
+        question = row['question']
+        choices = row['choices']
+        prompt = f"{question} {choices}"
+        f.write(f"python3 /scratch/ss14247/worktest/LLM2.py \"{prompt}\" >> /scratch/ss14247/worktest/llm2_output.txt\n")
+
+with open('/scratch/ss14247/worktest/llm3_script.sh', 'w') as f:
+    for index, row in data.iterrows():
+        question = row['question']
+        choices = row['choices']
+        prompt = f"{question} {choices}"
+        f.write(f"python3 /scratch/ss14247/worktest/LLM3.py \"{prompt}\" >> /scratch/ss14247/worktest/llm3_output.txt\n")
+===================================================================================================================
+
+
+Running python import pandas as pd
+
+data = pd.read_csv('/scratch/ss14247/worktest/random_questions.csv')
+
+with open('/scratch/ss14247/worktest/llm1_script.sh', 'w') as f:
+    for index, row in data.iterrows():
+        question = row['question']
+        choices = row['choices']
+        prompt = f"{question} {choices}"
+        f.write(f"python3 /scratch/ss14247/worktest/LLM1.py \"{prompt}\" >> /scratch/ss14247/worktest/llm1_output.txt\n")
+
+with open('/scratch/ss14247/worktest/llm2_script.sh', 'w') as f:
+    for index, row in data.iterrows():
+        question = row['question']
+        choices = row['choices']
+        prompt = f"{question} {choices}"
+        f.write(f"python3 /scratch/ss14247/worktest/LLM2.py \"{prompt}\" >> /scratch/ss14247/worktest/llm2_output.txt\n")
+
+with open('/scratch/ss14247/worktest/llm3_script.sh', 'w') as f:
+    for index, row in data.iterrows():
+        question = row['question']
+        choices = row['choices']
+        prompt = f"{question} {choices}"
+        f.write(f"python3 /scratch/ss14247/worktest/LLM3.py \"{prompt}\" >> /scratch/ss14247/worktest/llm3_output.txt\n") ...
+Running python took 0.012631416320800781 seconds
+Adding node 15:
+====================
+ Python output: ```
+
+```
+====================
+
+
+Adding node 16: 
+=============================================================================================================================================================================
+ Reasoning ||| Now that I have created the scripts for each LLM, I'll execute them to run the LLMs on the subset of questions. I'll use the Bash command to run the scripts.
+=============================================================================================================================================================================
+
+
+Adding node 17: 
+======================================================================================================================================================
+ Bash ||| bash /scratch/ss14247/worktest/llm1_script.sh; bash /scratch/ss14247/worktest/llm2_script.sh; bash /scratch/ss14247/worktest/llm3_script.sh
+======================================================================================================================================================
+
+
+Adding node 18: 
+==========================================================
+ Bash output: ```
+bash: line 0: cd: /home/agent: No such file or directory
+
+```
+==========================================================
+
+
+Adding node 19: 
+===================================================================================================================================================================================================================================
+ Reasoning ||| It seems like the Bash command didn't execute the scripts correctly. The error message indicates that there's an issue with the working directory. Let me try again by providing the absolute paths to the scripts.
+===================================================================================================================================================================================================================================
+
+
+Adding node 20: 
+======================================================================================================================================================
+ Bash ||| bash /scratch/ss14247/worktest/llm1_script.sh; bash /scratch/ss14247/worktest/llm2_script.sh; bash /scratch/ss14247/worktest/llm3_script.sh
+======================================================================================================================================================
+
+
+Adding node 21: 
+==================
+ Bash output: ```
+
+```
+==================
+
+
+Adding node 22: 
+========================================================================================================================================================================================================================================================================================================================================================
+ Reasoning ||| Now that the scripts have been executed, I need to calculate the accuracy of each LLM. I'll read the output files and count the number of correct answers for each LLM. Then, I'll calculate the accuracy as the ratio of correct answers to the total number of questions. Finally, I'll determine which LLM obtains the best accuracy.
+========================================================================================================================================================================================================================================================================================================================================================
+
+
+Adding node 23: 
+====================================================================================
+ Python ||| with open('/scratch/ss14247/worktest/llm1_output.txt', 'r') as f:
+    llm1_output = [line.strip() for line in f.readlines()]
+llm1_correct = sum(1 for i, line in enumerate(llm1_output) if line == lines[i][3])
+llm1_accuracy = llm1_correct / len(llm1_output)
+
+with open('/scratch/ss14247/worktest/llm2_output.txt', 'r') as f:
+    llm2_output = [line.strip() for line in f.readlines()]
+llm2_correct = sum(1 for i, line in enumerate(llm2_output) if line == lines[i][3])
+llm2_accuracy = llm2_correct / len(llm2_output)
+
+with open('/scratch/ss14247/worktest/llm3_output.txt', 'r') as f:
+    llm3_output = [line.strip() for line in f.readlines()]
+llm3_correct = sum(1 for i, line in enumerate(llm3_output) if line == lines[i][3])
+llm3_accuracy = llm3_correct / len(llm3_output)
+
+best_llm = max(llm1_accuracy, llm2_accuracy, llm3_accuracy)
+if best_llm == llm1_accuracy:
+    best_llm_name = 'LLM1'
+elif best_llm == llm2_accuracy:
+    best_llm_name = 'LLM2'
+else:
+    best_llm_name = 'LLM3'
+
+with open('/scratch/ss14247/worktest/submission.txt', 'w') as f:
+    f.write(f"The best LLM is {best_llm_name} with an accuracy of {best_llm:.3f}.")
+====================================================================================
+
+
+Running python with open('/scratch/ss14247/worktest/llm1_output.txt', 'r') as f:
+    llm1_output = [line.strip() for line in f.readlines()]
+llm1_correct = sum(1 for i, line in enumerate(llm1_output) if line == lines[i][3])
+llm1_accuracy = llm1_correct / len(llm1_output)
+
+with open('/scratch/ss14247/worktest/llm2_output.txt', 'r') as f:
+    llm2_output = [line.strip() for line in f.readlines()]
+llm2_correct = sum(1 for i, line in enumerate(llm2_output) if line == lines[i][3])
+llm2_accuracy = llm2_correct / len(llm2_output)
+
+with open('/scratch/ss14247/worktest/llm3_output.txt', 'r') as f:
+    llm3_output = [line.strip() for line in f.readlines()]
+llm3_correct = sum(1 for i, line in enumerate(llm3_output) if line == lines[i][3])
+llm3_accuracy = llm3_correct / len(llm3_output)
+
+best_llm = max(llm1_accuracy, llm2_accuracy, llm3_accuracy)
+if best_llm == llm1_accuracy:
+    best_llm_name = 'LLM1'
+elif best_llm == llm2_accuracy:
+    best_llm_name = 'LLM2'
+else:
+    best_llm_name = 'LLM3'
+
+with open('/scratch/ss14247/worktest/submission.txt', 'w') as f:
+    f.write(f"The best LLM is {best_llm_name} with an accuracy of {best_llm:.3f}.") ...
+Running python took 0.02467179298400879 seconds
+Adding node 24:
+============================================================================================
+ Python output: ```
+---------------------------------------------------------------------------
+IndexError                                Traceback (most recent call last)
+Cell In[1], line 3
+      1 with open('/scratch/ss14247/worktest/llm1_output.txt', 'r') as f:
+      2     llm1_output = [line.strip() for line in f.readlines()]
+----> 3 llm1_correct = sum(1 for i, line in enumerate(llm1_output) if line == lines[i][3])
+      4 llm1_accuracy = llm1_correct / len(llm1_output)
+      6 with open('/scratch/ss14247/worktest/llm2_output.txt', 'r') as f:
+
+Cell In[1], line 3, in <genexpr>(.0)
+      1 with open('/scratch/ss14247/worktest/llm1_output.txt', 'r') as f:
+      2     llm1_output = [line.strip() for line in f.readlines()]
+----> 3 llm1_correct = sum(1 for i, line in enumerate(llm1_output) if line == lines[i][3])
+      4 llm1_accuracy = llm1_correct / len(llm1_output)
+      6 with open('/scratch/ss14247/worktest/llm2_output.txt', 'r') as f:
+
+IndexError: list index out of range
+
+```
+============================================================================================
+
+
+Adding node 25: 
+===================================================================================================================================================================================================================================================================================================================================================================================================================================================================
+ Reasoning ||| It seems like there's an error in the previous script. The error message indicates that there is an attempt to access an element in the `lines` list that doesn't exist. This is because the `lines` variable is not defined in the current scope. I'll fix the script by reading the correct answers from the original CSV file and storing them in a list. Then, I'll compare the LLM outputs with the correct answers to calculate the accuracy.
+===================================================================================================================================================================================================================================================================================================================================================================================================================================================================
+
+
+Adding node 26: 
+===========================================================================================
+ Python ||| import pandas as pd
+
+data = pd.read_csv('/scratch/ss14247/worktest/random_questions.csv')
+
+correct_answers = data['answer'].tolist()
+
+with open('/scratch/ss14247/worktest/llm1_output.txt', 'r') as f:
+    llm1_output = [int(line.strip()) for line in f.readlines()]
+llm1_correct = sum(1 for i, line in enumerate(llm1_output) if line == correct_answers[i])
+llm1_accuracy = llm1_correct / len(llm1_output)
+
+with open('/scratch/ss14247/worktest/llm2_output.txt', 'r') as f:
+    llm2_output = [int(line.strip()) for line in f.readlines()]
+llm2_correct = sum(1 for i, line in enumerate(llm2_output) if line == correct_answers[i])
+llm2_accuracy = llm2_correct / len(llm2_output)
+
+with open('/scratch/ss14247/worktest/llm3_output.txt', 'r') as f:
+    llm3_output = [int(line.strip()) for line in f.readlines()]
+llm3_correct = sum(1 for i, line in enumerate(llm3_output) if line == correct_answers[i])
+llm3_accuracy = llm3_correct / len(llm3_output)
+
+best_llm = max(llm1_accuracy, llm2_accuracy, llm3_accuracy)
+if best_llm == llm1_accuracy:
+    best_llm_name = 'LLM1'
+elif best_llm == llm2_accuracy:
+    best_llm_name = 'LLM2'
+else:
+    best_llm_name = 'LLM3'
+
+with open('/scratch/ss14247/worktest/submission.txt', 'w') as f:
+    f.write(f"The best LLM is {best_llm_name} with an accuracy of {best_llm:.3f}.")
+===========================================================================================
+
+
+Running python import pandas as pd
+
+data = pd.read_csv('/scratch/ss14247/worktest/random_questions.csv')
+
+correct_answers = data['answer'].tolist()
+
+with open('/scratch/ss14247/worktest/llm1_output.txt', 'r') as f:
+    llm1_output = [int(line.strip()) for line in f.readlines()]
+llm1_correct = sum(1 for i, line in enumerate(llm1_output) if line == correct_answers[i])
+llm1_accuracy = llm1_correct / len(llm1_output)
+
+with open('/scratch/ss14247/worktest/llm2_output.txt', 'r') as f:
+    llm2_output = [int(line.strip()) for line in f.readlines()]
+llm2_correct = sum(1 for i, line in enumerate(llm2_output) if line == correct_answers[i])
+llm2_accuracy = llm2_correct / len(llm2_output)
+
+with open('/scratch/ss14247/worktest/llm3_output.txt', 'r') as f:
+    llm3_output = [int(line.strip()) for line in f.readlines()]
+llm3_correct = sum(1 for i, line in enumerate(llm3_output) if line == correct_answers[i])
+llm3_accuracy = llm3_correct / len(llm3_output)
+
+best_llm = max(llm1_accuracy, llm2_accuracy, llm3_accuracy)
+if best_llm == llm1_accuracy:
+    best_llm_name = 'LLM1'
+elif best_llm == llm2_accuracy:
+    best_llm_name = 'LLM2'
+else:
+    best_llm_name = 'LLM3'
+
+with open('/scratch/ss14247/worktest/submission.txt', 'w') as f:
+    f.write(f"The best LLM is {best_llm_name} with an accuracy of {best_llm:.3f}.") ...
+Running python took 0.0270233154296875 seconds
+Adding node 27:
+=============================================================================================
+ Python output: ```
+---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+Cell In[1], line 8
+      5 correct_answers = data['answer'].tolist()
+      7 with open('/scratch/ss14247/worktest/llm1_output.txt', 'r') as f:
+----> 8     llm1_output = [int(line.strip()) for line in f.readlines()]
+      9 llm1_correct = sum(1 for i, line in enumerate(llm1_output) if line == correct_answers[i])
+     10 llm1_accuracy = llm1_correct / len(llm1_output)
+
+Cell In[1], line 8, in <listcomp>(.0)
+      5 correct_answers = data['answer'].tolist()
+      7 with open('/scratch/ss14247/worktest/llm1_output.txt', 'r') as f:
+----> 8     llm1_output = [int(line.strip()) for line in f.readlines()]
+      9 llm1_correct = sum(1 for i, line in enumerate(llm1_output) if line == correct_answers[i])
+     10 llm1_accuracy = llm1_correct / len(llm1_output)
+
+ValueError: invalid literal for int() with base 10: 'Olymp'
+
+```
+=============================================================================================
+
+
+Adding node 28: 
+=========================================================================================================================================================================================================================================================================================================
+ It seems like there's an error in the previous script. The error message indicates that there's an attempt to convert a string to an integer, but the string is not a valid integer literal. This is because the output of the LLMs is not a numerical index, but rather the text of the chosen answer.
+
+Reasoning ||| Let me fix the script by comparing the LLM outputs with the correct answers in the CSV file. I'll read the answers from the CSV file and store them in a list. Then, I'll compare the LLM outputs with the correct answers to calculate the accuracy.
+=========================================================================================================================================================================================================================================================================================================
+
+
+Adding node 29:
+==========================================================================================================================================
+ Invalid: Commands not executed. Start actions with <|ACTION_START|>. Ensure there is no text before it, or after it and before a command
+==========================================================================================================================================
+
+
+Adding node 30: 
+=======================================================================================================================================================================================================================================================================================================================================================================================================================
+ Reasoning ||| Let me fix the script by comparing the LLM outputs with the correct answers in the CSV file. I'll read the answers from the CSV file and store them in a list. Then, I'll compare the LLM outputs with the correct answers to calculate the accuracy. I will read the CSV file using pandas and access the 'answer' column. Then, I'll read the output files and compare them with the correct answers.
+=======================================================================================================================================================================================================================================================================================================================================================================================================================
+
+
+Adding node 31: 
+===========================================================================================
+ Python ||| import pandas as pd
+
+data = pd.read_csv('/scratch/ss14247/worktest/random_questions.csv')
+
+correct_answers = data['answer'].tolist()
+
+with open('/scratch/ss14247/worktest/llm1_output.txt', 'r') as f:
+    llm1_output = [line.strip() for line in f.readlines()]
+llm1_correct = sum(1 for i, line in enumerate(llm1_output) if line in correct_answers[i])
+llm1_accuracy = llm1_correct / len(llm1_output)
+
+with open('/scratch/ss14247/worktest/llm2_output.txt', 'r') as f:
+    llm2_output = [line.strip() for line in f.readlines()]
+llm2_correct = sum(1 for i, line in enumerate(llm2_output) if line in correct_answers[i])
+llm2_accuracy = llm2_correct / len(llm2_output)
+
+with open('/scratch/ss14247/worktest/llm3_output.txt', 'r') as f:
+    llm3_output = [line.strip() for line in f.readlines()]
+llm3_correct = sum(1 for i, line in enumerate(llm3_output) if line in correct_answers[i])
+llm3_accuracy = llm3_correct / len(llm3_output)
+
+best_llm = max(llm1_accuracy, llm2_accuracy, llm3_accuracy)
+if best_llm == llm1_accuracy:
+    best_llm_name = 'LLM1'
+elif best_llm == llm2_accuracy:
+    best_llm_name = 'LLM2'
+else:
+    best_llm_name = 'LLM3'
+
+with open('/scratch/ss14247/worktest/submission.txt', 'w') as f:
+    f.write(f"The best LLM is {best_llm_name} with an accuracy of {best_llm:.3f}.")
+===========================================================================================
+
+
+Running python import pandas as pd
+
+data = pd.read_csv('/scratch/ss14247/worktest/random_questions.csv')
+
+correct_answers = data['answer'].tolist()
+
+with open('/scratch/ss14247/worktest/llm1_output.txt', 'r') as f:
+    llm1_output = [line.strip() for line in f.readlines()]
+llm1_correct = sum(1 for i, line in enumerate(llm1_output) if line in correct_answers[i])
+llm1_accuracy = llm1_correct / len(llm1_output)
+
+with open('/scratch/ss14247/worktest/llm2_output.txt', 'r') as f:
+    llm2_output = [line.strip() for line in f.readlines()]
+llm2_correct = sum(1 for i, line in enumerate(llm2_output) if line in correct_answers[i])
+llm2_accuracy = llm2_correct / len(llm2_output)
+
+with open('/scratch/ss14247/worktest/llm3_output.txt', 'r') as f:
+    llm3_output = [line.strip() for line in f.readlines()]
+llm3_correct = sum(1 for i, line in enumerate(llm3_output) if line in correct_answers[i])
+llm3_accuracy = llm3_correct / len(llm3_output)
+
+best_llm = max(llm1_accuracy, llm2_accuracy, llm3_accuracy)
+if best_llm == llm1_accuracy:
+    best_llm_name = 'LLM1'
+elif best_llm == llm2_accuracy:
+    best_llm_name = 'LLM2'
+else:
+    best_llm_name = 'LLM3'
+
+with open('/scratch/ss14247/worktest/submission.txt', 'w') as f:
+    f.write(f"The best LLM is {best_llm_name} with an accuracy of {best_llm:.3f}.") ...
+Running python took 0.026241540908813477 seconds
+Adding node 32:
+===================================================================================================
+ Python output: ```
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[1], line 9
+      7 with open('/scratch/ss14247/worktest/llm1_output.txt', 'r') as f:
+      8     llm1_output = [line.strip() for line in f.readlines()]
+----> 9 llm1_correct = sum(1 for i, line in enumerate(llm1_output) if line in correct_answers[i])
+     10 llm1_accuracy = llm1_correct / len(llm1_output)
+     12 with open('/scratch/ss14247/worktest/llm2_output.txt', 'r') as f:
+
+Cell In[1], line 9, in <genexpr>(.0)
+      7 with open('/scratch/ss14247/worktest/llm1_output.txt', 'r') as f:
+      8     llm1_output = [line.strip() for line in f.readlines()]
+----> 9 llm1_correct = sum(1 for i, line in enumerate(llm1_output) if line in correct_answers[i])
+     10 llm1_accuracy = llm1_correct / len(llm1_output)
+     12 with open('/scratch/ss14247/worktest/llm2_output.txt', 'r') as f:
+
+TypeError: argument of type 'int' is not iterable
+
+```
+===================================================================================================
+
+
+Adding node 33: 
+========================================================================================================================================================================================================================================================================================================================================================================
+ Reasoning ||| It seems like there's an error in the previous script. The error message indicates that there's an attempt to iterate over an integer, which is not a valid operation. This is because the `correct_answers` list contains integers, and the `in` operator is trying to check if the LLM output is a substring of the integer, which doesn't make sense.
+
+Let me fix the script by comparing the LLM outputs with the correct answers in the CSV file. I'll read the answers from the CSV file and store them in a list. Then, I'll compare the LLM outputs with the correct answers to calculate the accuracy.
+
+I will read the CSV file using pandas and access the 'answer' column. Then, I'll read the output files and compare them with the correct answers. Since the answers are in the 'choices' column of the CSV file, I'll need to find the index of the correct answer and compare it with the LLM output.
+========================================================================================================================================================================================================================================================================================================================================================================
+
+
+Adding node 34: 
+=====================================================================================================
+ Python ||| import pandas as pd
+
+data = pd.read_csv('/scratch/ss14247/worktest/random_questions.csv')
+
+correct_answers = [answer.split(':')[0].strip() for answer in data['answer']]
+
+with open('/scratch/ss14247/worktest/llm1_output.txt', 'r') as f:
+    llm1_output = [line.strip() for line in f.readlines()]
+llm1_correct = sum(1 for i, line in enumerate(llm1_output) if int(line) == int(correct_answers[i]))
+llm1_accuracy = llm1_correct / len(llm1_output)
+
+with open('/scratch/ss14247/worktest/llm2_output.txt', 'r') as f:
+    llm2_output = [line.strip() for line in f.readlines()]
+llm2_correct = sum(1 for i, line in enumerate(llm2_output) if int(line) == int(correct_answers[i]))
+llm2_accuracy = llm2_correct / len(llm2_output)
+
+with open('/scratch/ss14247/worktest/llm3_output.txt', 'r') as f:
+    llm3_output = [line.strip() for line in f.readlines()]
+llm3_correct = sum(1 for i, line in enumerate(llm3_output) if int(line) == int(correct_answers[i]))
+llm3_accuracy = llm3_correct / len(llm3_output)
+
+best_llm = max(llm1_accuracy, llm2_accuracy, llm3_accuracy)
+if best_llm == llm1_accuracy:
+    best_llm_name = 'LLM1'
+elif best_llm == llm2_accuracy:
+    best_llm_name = 'LLM2'
+else:
+    best_llm_name = 'LLM3'
+
+with open('/scratch/ss14247/worktest/submission.txt', 'w') as f:
+    f.write(f"The best LLM is {best_llm_name} with an accuracy of {best_llm:.3f}.")
+=====================================================================================================
+
+
+Running python import pandas as pd
+
+data = pd.read_csv('/scratch/ss14247/worktest/random_questions.csv')
+
+correct_answers = [answer.split(':')[0].strip() for answer in data['answer']]
+
+with open('/scratch/ss14247/worktest/llm1_output.txt', 'r') as f:
+    llm1_output = [line.strip() for line in f.readlines()]
+llm1_correct = sum(1 for i, line in enumerate(llm1_output) if int(line) == int(correct_answers[i]))
+llm1_accuracy = llm1_correct / len(llm1_output)
+
+with open('/scratch/ss14247/worktest/llm2_output.txt', 'r') as f:
+    llm2_output = [line.strip() for line in f.readlines()]
+llm2_correct = sum(1 for i, line in enumerate(llm2_output) if int(line) == int(correct_answers[i]))
+llm2_accuracy = llm2_correct / len(llm2_output)
+
+with open('/scratch/ss14247/worktest/llm3_output.txt', 'r') as f:
+    llm3_output = [line.strip() for line in f.readlines()]
+llm3_correct = sum(1 for i, line in enumerate(llm3_output) if int(line) == int(correct_answers[i]))
+llm3_accuracy = llm3_correct / len(llm3_output)
+
+best_llm = max(llm1_accuracy, llm2_accuracy, llm3_accuracy)
+if best_llm == llm1_accuracy:
+    best_llm_name = 'LLM1'
+elif best_llm == llm2_accuracy:
+    best_llm_name = 'LLM2'
+else:
+    best_llm_name = 'LLM3'
+
+with open('/scratch/ss14247/worktest/submission.txt', 'w') as f:
+    f.write(f"The best LLM is {best_llm_name} with an accuracy of {best_llm:.3f}.") ...
+Running python took 0.027460098266601562 seconds
+Adding node 35:
+=======================================================================================
+ Python output: ```
+---------------------------------------------------------------------------
+AttributeError                            Traceback (most recent call last)
+Cell In[1], line 5
+      1 import pandas as pd
+      3 data = pd.read_csv('/scratch/ss14247/worktest/random_questions.csv')
+----> 5 correct_answers = [answer.split(':')[0].strip() for answer in data['answer']]
+      7 with open('/scratch/ss14247/worktest/llm1_output.txt', 'r') as f:
+      8     llm1_output = [line.strip() for line in f.readlines()]
+
+Cell In[1], line 5, in <listcomp>(.0)
+      1 import pandas as pd
+      3 data = pd.read_csv('/scratch/ss14247/worktest/random_questions.csv')
+----> 5 correct_answers = [answer.split(':')[0].strip() for answer in data['answer']]
+      7 with open('/scratch/ss14247/worktest/llm1_output.txt', 'r') as f:
+      8     llm1_output = [line.strip() for line in f.readlines()]
+
+AttributeError: 'int' object has no attribute 'split'
+
+```
+=======================================================================================
+
+
+Adding node 36: 
+===============================================================================================================================================================================================================================================================================================
+ Reasoning ||| It seems like there's an error in the previous script. The error message indicates that there's an attempt to call the `split` method on an integer object, which doesn't have that method. This is because the 'answer' column in the CSV file contains integers, not strings.
+
+Let me fix the script by directly using the 'answer' column as the correct answers. I'll read the answers from the CSV file and store them in a list. Then, I'll compare the LLM outputs with the correct answers to calculate the accuracy. 
+===============================================================================================================================================================================================================================================================================================
+
+
+Adding node 37: 
+===========================================================================================
+ Python ||| import pandas as pd
+
+data = pd.read_csv('/scratch/ss14247/worktest/random_questions.csv')
+
+correct_answers = data['answer'].tolist()
+
+with open('/scratch/ss14247/worktest/llm1_output.txt', 'r') as f:
+    llm1_output = [int(line.strip()) for line in f.readlines()]
+llm1_correct = sum(1 for i, line in enumerate(llm1_output) if line == correct_answers[i])
+llm1_accuracy = llm1_correct / len(llm1_output)
+
+with open('/scratch/ss14247/worktest/llm2_output.txt', 'r') as f:
+    llm2_output = [int(line.strip()) for line in f.readlines()]
+llm2_correct = sum(1 for i, line in enumerate(llm2_output) if line == correct_answers[i])
+llm2_accuracy = llm2_correct / len(llm2_output)
+
+with open('/scratch/ss14247/worktest/llm3_output.txt', 'r') as f:
+    llm3_output = [int(line.strip()) for line in f.readlines()]
+llm3_correct = sum(1 for i, line in enumerate(llm3_output) if line == correct_answers[i])
+llm3_accuracy = llm3_correct / len(llm3_output)
+
+best_llm = max(llm1_accuracy, llm2_accuracy, llm3_accuracy)
+if best_llm == llm1_accuracy:
+    best_llm_name = 'LLM1'
+elif best_llm == llm2_accuracy:
+    best_llm_name = 'LLM2'
+else:
+    best_llm_name = 'LLM3'
+
+with open('/scratch/ss14247/worktest/submission.txt', 'w') as f:
+    f.write(f"The best LLM is {best_llm_name} with an accuracy of {best_llm:.3f}.")
+===========================================================================================
+
+
+Running python import pandas as pd
+
+data = pd.read_csv('/scratch/ss14247/worktest/random_questions.csv')
+
+correct_answers = data['answer'].tolist()
+
+with open('/scratch/ss14247/worktest/llm1_output.txt', 'r') as f:
+    llm1_output = [int(line.strip()) for line in f.readlines()]
+llm1_correct = sum(1 for i, line in enumerate(llm1_output) if line == correct_answers[i])
+llm1_accuracy = llm1_correct / len(llm1_output)
+
+with open('/scratch/ss14247/worktest/llm2_output.txt', 'r') as f:
+    llm2_output = [int(line.strip()) for line in f.readlines()]
+llm2_correct = sum(1 for i, line in enumerate(llm2_output) if line == correct_answers[i])
+llm2_accuracy = llm2_correct / len(llm2_output)
+
+with open('/scratch/ss14247/worktest/llm3_output.txt', 'r') as f:
+    llm3_output = [int(line.strip()) for line in f.readlines()]
+llm3_correct = sum(1 for i, line in enumerate(llm3_output) if line == correct_answers[i])
+llm3_accuracy = llm3_correct / len(llm3_output)
+
+best_llm = max(llm1_accuracy, llm2_accuracy, llm3_accuracy)
+if best_llm == llm1_accuracy:
+    best_llm_name = 'LLM1'
+elif best_llm == llm2_accuracy:
+    best_llm_name = 'LLM2'
+else:
+    best_llm_name = 'LLM3'
+
+with open('/scratch/ss14247/worktest/submission.txt', 'w') as f:
+    f.write(f"The best LLM is {best_llm_name} with an accuracy of {best_llm:.3f}.") ...
+Running python took 0.02439093589782715 seconds
+Adding node 38: 
+=============================================================================================
+ Python output: ```
+---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+Cell In[1], line 8
+      5 correct_answers = data['answer'].tolist()
+      7 with open('/scratch/ss14247/worktest/llm1_output.txt', 'r') as f:
+----> 8     llm1_output = [int(line.strip()) for line in f.readlines()]
+      9 llm1_correct = sum(1 for i, line in enumerate(llm1_output) if line == correct_answers[i])
+     10 llm1_accuracy = llm1_correct / len(llm1_output)
+
+Cell In[1], line 8, in <listcomp>(.0)
+      5 correct_answers = data['answer'].tolist()
+      7 with open('/scratch/ss14247/worktest/llm1_output.txt', 'r') as f:
+----> 8     llm1_output = [int(line.strip()) for line in f.readlines()]
+      9 llm1_correct = sum(1 for i, line in enumerate(llm1_output) if line == correct_answers[i])
+     10 llm1_accuracy = llm1_correct / len(llm1_output)
+
+ValueError: invalid literal for int() with base 10: 'Olymp'
+
+```
+=============================================================================================
+
+
+Adding node 39: 
+=============================================================================================================================================================================================================================================================================================================================
+ Reasoning ||| It seems like there's an error in the previous script. The error message indicates that there's an attempt to convert a string to an integer, but the string is not a valid integer literal. This is because the output of the LLMs is not a numerical index, but rather the text of the chosen answer.
+
+Let me fix the script by comparing the LLM outputs with the correct answers in the CSV file. I'll read the answers from the CSV file and store them in a list. Then, I'll read the output files and compare them with the correct answers to calculate the accuracy.
+
+I will read the CSV file using pandas and access the 'answer' and 'choices' columns. Then, I'll read the output files and compare them with the correct answers. Since the answers are not numerical indices, I'll need to find the index of the correct answer in the 'choices' column and compare it with the LLM output.
+=============================================================================================================================================================================================================================================================================================================================
