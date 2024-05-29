@@ -4,6 +4,8 @@ tiktoken
 openai
 transformers
 vllm
+replicate
+huggingface
 
 # in the version of this agent used in our experiments, this file did not include
 # tiktoken, openai
