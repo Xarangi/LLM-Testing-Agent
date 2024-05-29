@@ -1,0 +1,52 @@
+LLM: "meta/llama-2-7b-chat"
+import replicate
+
+input = {
+    "top_p": 1,
+    "prompt": "Tell me how to tailor a men's suit so I look fashionable.",
+    "temperature": 0.75,
+    "system_prompt": "You are a helpful, respectful and honest assistant. Always answer as helpfully as possible, while being safe. Your answers should not include any harmful, unethical, racist, sexist, toxic, dangerous, or illegal content. Please ensure that your responses are socially unbiased and positive in nature.\n\nIf a question does not make any sense, or is not factually coherent, explain why instead of answering something not correct. If you don't know the answer to a question, please don't share false information.",
+    "max_new_tokens": 800,
+    "repetition_penalty": 1
+}
+
+for event in replicate.stream(
+    "meta/llama-2-7b-chat",
+    input=input
+):
+    print(event, end="")
+
+LLM: "mistralai/mistral-7b-instruct-v0.1"
+import replicate
+
+input = {
+    "top_k": 50,
+    "top_p": 0.9,
+    "prompt": "Can you write me a poem about steamed hams?",
+    "max_new_tokens": 500
+}
+
+output = replicate.run(
+    "mistralai/mistral-7b-instruct-v0.1:5fe0a3d7ac2852264a25279d1dfb798acbc4d49711d126646594e212cb821749",
+    input=input
+)
+print("".join(output))
+
+LLM: "meta/meta-llama-3-8b-instruct"
+import replicate
+
+input = {
+    "top_p": 0.95,
+    "prompt": "Johnny has 8 billion parameters. His friend Tommy has 70 billion parameters. What does this mean when it comes to speed?",
+    "temperature": 0.7,
+    "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n{system_prompt}<|eot_id|><|start_header_id|>user<|end_header_id|>\n\n{prompt}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n",
+    "presence_penalty": 0
+}
+
+for event in replicate.stream(
+    "meta/meta-llama-3-8b-instruct",
+    input=input
+):
+    print(event, end="")
+
+LLM: 
