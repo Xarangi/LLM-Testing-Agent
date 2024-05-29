@@ -1,8 +1,9 @@
 pydantic
 ipython
 tiktoken
-# openai
+openai
 transformers
+vllm
 
 # in the version of this agent used in our experiments, this file did not include
 # tiktoken, openai
